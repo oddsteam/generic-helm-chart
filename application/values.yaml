@@ -1,0 +1,4 @@
+server:
+  rbac:
+    log:
+      enforce.enable: "true"
