@@ -13,9 +13,6 @@ build:
   stage: build
   script:
     - |
-      if [[ "$(echo $CI_COMMIT_MESSAGE)" != *"[skip-ci]"* ]]; then
-        # Check out code (Already done in GitLab automatically)
-        
         # Set up Helm
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         helm version --short
