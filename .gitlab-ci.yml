@@ -1,66 +1,13 @@
 stages:
-  # - lint
-  # - package
-  # - publish
   - lint-helm-chart
+
+image:
+  name: alpine/helm:3.2.1
+  entrypoint: ["/bin/sh", "-c"]
 variables:
-  CHART_NAME: "application"
-  HELM_VERSION: "3.16"
   HELM_EXPERIMENTAL_OCI: 1
-# helm-dry-run:
-#   stage: lint
-#   image: alpine/helm:$HELM_VERSION
-#   script:
-#     - helm lint ${CHART_NAME}
-#     - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
-#   only:
-#     refs:
-#       - main
-#     changes:
-#       - ${CHART_NAME}/**/*
-#   except:
-#     changes:
-#       - README.md
-#       - LICENSE
-
-# push-changes:
-#   stage: package
-#   image: alpine/helm:$HELM_VERSION
-#   script:
-#     - git config --global user.email "gitlab-ci@odds.team"
-#     - git config --global user.name "GITLAB CI"
-#     - export NEW_TAG=$(git tag --list | sort -rV | head -n 1 | awk -F '.' '{print $1"."$2"."$3+1}')
-#     - sed -i "s/^version:.*/version: ${NEW_TAG}/" ${CHART_NAME}/Chart.yaml
-#     - helm package ${CHART_NAME}
-#     - mv ${CHART_NAME}-${NEW_TAG}.tgz ${CHART_NAME}/
-
-# publish:
-#   stage: publish
-#   image: alpine/helm:$HELM_VERSION
-#   script:
-#     # Push Helm Chart to GitLab Pages or registry
-#     - helm repo index .
-#     - git add .
-#     - git commit -m "Update Helm Chart version to ${NEW_TAG}"
-#     - git push origin main
-#   only:
-#     refs:
-#       - main
-#     changes:
-#       - ${CHART_NAME}/**/*
-
-helm-dry-run:
+lint-helm:
   stage: lint-helm-chart
-  image: alpine/helm:$HELM_VERSION
   script:
     - helm lint ${CHART_NAME}
     - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
-  only:
-    refs:
-      - main
-    # changes:
-    #   - ${CHART_NAME}/**/*
-  except:
-    changes:
-      - README.md
-      - LICENSE
