@@ -1,27 +1,27 @@
 stages:
-  # - lint
+  - lint
   # - package
   # - publish
-  - lint-helm-chart
+  # - lint-helm-chart
 variables:
   CHART_NAME: "application"
   HELM_VERSION: "3.16"
   HELM_EXPERIMENTAL_OCI: 1
-# helm-dry-run:
-#   stage: lint
-#   image: alpine/helm:$HELM_VERSION
-#   script:
-#     - helm lint ${CHART_NAME}
-#     - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
-#   only:
-#     refs:
-#       - main
-#     changes:
-#       - ${CHART_NAME}/**/*
-#   except:
-#     changes:
-#       - README.md
-#       - LICENSE
+helm-dry-run:
+  stage: lint
+  image: alpine/helm:$HELM_VERSION
+  script:
+    - helm lint ${CHART_NAME}
+    - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
+  only:
+    refs:
+      - main
+    changes:
+      - ${CHART_NAME}/**/*
+  except:
+    changes:
+      - README.md
+      - LICENSE
 
 # push-changes:
 #   stage: package
@@ -47,20 +47,20 @@ variables:
 #     refs:
 #       - main
 #     changes:
-#       - ${CHART_NAME}/**/*
+# #       - ${CHART_NAME}/**/*
 
-helm-dry-run:
-  stage: lint-helm-chart
-  image: alpine/helm:$HELM_VERSION
-  script:
-    - helm lint ${CHART_NAME}
-    - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
-  only:
-    refs:
-      - main
-    # changes:
-    #   - ${CHART_NAME}/**/*
-  except:
-    changes:
-      - README.md
-      - LICENSE
+# helm-dry-run:
+#   stage: lint-helm-chart
+#   image: alpine/helm:$HELM_VERSION
+#   script:
+#     - helm lint ${CHART_NAME}
+#     - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
+#   only:
+#     refs:
+#       - main
+#     # changes:
+#     #   - ${CHART_NAME}/**/*
+#   except:
+#     changes:
+#       - README.md
+#       - LICENSE
