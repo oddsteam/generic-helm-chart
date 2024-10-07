@@ -20,3 +20,17 @@ build:
         # Lint
         helm lint ${CHART_NAME}
         helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
+
+unittest:
+  stage: test
+  script:
+    - |
+        # Set up Helm
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        helm version --short
+
+        # Install helm-unittest
+        helm plugin install https://github.com/quintush/helm-unittest --version v0.5.0
+
+        # Run Helm Unit Tests
+        helm unittest ${CHART_NAME}
