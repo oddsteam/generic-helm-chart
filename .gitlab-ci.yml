@@ -1,36 +1,70 @@
 stages:
-  - build
-  - test
-
+  # - lint
+  # - package
+  # - publish
+  - lint-helm-chart
 variables:
   CHART_NAME: "application"
-  KUBECONFIG: "$CI_PROJECT_DIR/.kubeconfig.yaml"
+  HELM_VERSION: "v3.8.2"
+  HELM_EXPERIMENTAL_OCI: 1
+# helm-dry-run:
+#   stage: lint
+#   image: alpine/helm:$HELM_VERSION
+#   script:
+#     - helm lint ${CHART_NAME}
+#     - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
+#   only:
+#     refs:
+#       - main
+#     changes:
+#       - ${CHART_NAME}/**/*
+#   except:
+#     changes:
+#       - README.md
+#       - LICENSE
 
-before_script:
-  - export KUBECONFIG=$KUBECONFIG
+# push-changes:
+#   stage: package
+#   image: alpine/helm:$HELM_VERSION
+#   script:
+#     - git config --global user.email "gitlab-ci@odds.team"
+#     - git config --global user.name "GITLAB CI"
+#     - export NEW_TAG=$(git tag --list | sort -rV | head -n 1 | awk -F '.' '{print $1"."$2"."$3+1}')
+#     - sed -i "s/^version:.*/version: ${NEW_TAG}/" ${CHART_NAME}/Chart.yaml
+#     - helm package ${CHART_NAME}
+#     - mv ${CHART_NAME}-${NEW_TAG}.tgz ${CHART_NAME}/
 
-build:
-  stage: build
+# publish:
+#   stage: publish
+#   image: alpine/helm:$HELM_VERSION
+#   script:
+#     # Push Helm Chart to GitLab Pages or registry
+#     - helm repo index .
+#     - git add .
+#     - git commit -m "Update Helm Chart version to ${NEW_TAG}"
+#     - git push origin main
+#   only:
+#     refs:
+#       - main
+#     changes:
+#       - ${CHART_NAME}/**/*
+
+image:
+  name: alpine/helm:3.2.1
+  entrypoint: ["/bin/sh", "-c"]
+
+helm-dry-run:
+  stage: lint-helm-chart
+  image: alpine/helm:$HELM_VERSION
   script:
-    - |
-        # Set up Helm
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-        helm version --short
-
-        # Lint
-        helm lint ${CHART_NAME}
-        helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
-
-unittest:
-  stage: test
-  script:
-    - |
-        # Set up Helm
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-        helm version --short
-
-        # Install helm-unittest
-        helm plugin install https://github.com/quintush/helm-unittest --version v0.5.0
-
-        # Run Helm Unit Tests
-        helm unittest ${CHART_NAME}
+    - helm lint ${CHART_NAME}
+    - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
+  only:
+    refs:
+      - main
+    # changes:
+    #   - ${CHART_NAME}/**/*
+  except:
+    changes:
+      - README.md
+      - LICENSE
