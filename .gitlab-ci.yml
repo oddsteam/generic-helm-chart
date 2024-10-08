@@ -23,5 +23,6 @@ publish-helm:
     entrypoint: ["/bin/sh", "-c"]
   stage: publish-helm-chart
   script:
-    - echo "$CI_REGISTRY_PASSWORD" | helm regsitry login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - helm --help
+    - echo "$CI_REGISTRY_PASSWORD" | helm registry login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - helm package ${CHART_NAME} --destination ${CHART_PACKAGE_DIR}
