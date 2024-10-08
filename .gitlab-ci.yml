@@ -6,6 +6,8 @@ variables:
   CHART_NAME: "application"
   HELM_VERSION: "3.16"
   HELM_EXPERIMENTAL_OCI: 1
+  CHART_PACKAGE_DIR: "charts"
+  GITLAB_REGISTRY_URL: "${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/helm"  # GitLab Package Registry URL
 
 lint-helm:
   image: 
@@ -21,5 +23,5 @@ publish-helm:
     entrypoint: ["/bin/sh", "-c"]
   stage: publish-helm-chart
   script:
-    - helm lint ${CHART_NAME}
-    - echo "Helm chart published"
+    - echo "$CI_REGISTRY_PASSWORD" | helm regsitry login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - helm package ${CHART_NAME} --destination ${CHART_PACKAGE_DIR}
