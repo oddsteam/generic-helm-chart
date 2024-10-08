@@ -24,6 +24,7 @@ update_chart_version:
   stage: update_chart_version
   script:
     - CHART_VERSION=${CI_COMMIT_TAG#v}
+    - echo $CHART_VERSION ${CHART_VERSION}
     - cat ${CHART_NAME}/Chart.yaml
   only:
     - tags
