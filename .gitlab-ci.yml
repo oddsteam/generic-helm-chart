@@ -34,11 +34,14 @@ publish-helm:
     name: alpine/helm:${HELM_VERSION}
     entrypoint: ["/bin/sh", "-c"]
   stage: publish-helm-chart
+  before_script:
+    - 'helm repo add --username gitlab-ci-token --password ${CI_JOB_TOKEN} ${CI_PROJECT_NAME} ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable'
   script:
     - helm --help
     - echo "$CI_JOB_TOKEN" | helm registry login $CI_SERVER_HOST -u gitlab-ci-token --password-stdin
     - helm package ${CHART_NAME} --destination ${CHART_PACKAGE_DIR}
     - echo ${GITLAB_REGISTRY_URL}
-    - helm push ${CHART_PACKAGE_DIR}/${CHART_NAME}-4.2.6.tgz oci://${GITLAB_REGISTRY_URL}
+    # - helm push ${CHART_PACKAGE_DIR}/${CHART_NAME}-4.2.6.tgz oci://${GITLAB_REGISTRY_URL}
+    - helm push ${CHART_PACKAGE_DIR}/${CHART_NAME}-4.2.6.tgz ${CI_PROJECT_NAME}
   # only:
   #   - tags
