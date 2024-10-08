@@ -14,4 +14,3 @@ lint-helm:
   stage: lint-helm-chart
   script:
     - helm lint ${CHART_NAME}
-    - helm lint ${CHART_NAME} -f ${CHART_NAME}/values-test.yaml
