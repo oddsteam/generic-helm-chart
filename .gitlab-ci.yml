@@ -8,13 +8,17 @@ variables:
   HELM_EXPERIMENTAL_OCI: 1
 
 lint-helm:
-  image: alpine/helm:${HELM_VERSION}
+  image: 
+    name: alpine/helm:${HELM_VERSION}
+    entrypoint: ["/bin/sh", "-c"]
   stage: lint-helm-chart
   script:
     - helm lint ${CHART_NAME}
 
 publish-helm:
-  image: alpine/helm:${HELM_VERSION}
+  image: 
+    name: alpine/helm:${HELM_VERSION}
+    entrypoint: ["/bin/sh", "-c"]
   stage: publish-helm-chart
   script:
     - helm lint ${CHART_NAME}
