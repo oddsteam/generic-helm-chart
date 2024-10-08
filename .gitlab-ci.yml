@@ -3,9 +3,6 @@ stages:
   - update_chart_version
   - publish-helm-chart
 
-only:
-    - tags
-
 variables:
   CHART_NAME: "application"
   HELM_VERSION: "3.16"
@@ -20,6 +17,8 @@ lint-helm:
   stage: lint-helm-chart
   script:
     - helm lint ${CHART_NAME}
+  only:
+    - tags
 
 update_chart_version:
   stage: update_chart_version
@@ -31,7 +30,9 @@ update_chart_version:
     - sed -i "s/^version:.*/version: ${CHART_VERSION}/" ${CHART_NAME}/Chart.yaml
     
     # Optional: Verify the version update
-    - cat Chart.yaml
+    - cat ${CHART_NAME}/Chart.yaml
+  only:
+    - tags
 
 publish-helm:
   image: 
@@ -42,3 +43,6 @@ publish-helm:
     - helm --help
     - echo "$CI_REGISTRY_PASSWORD" | helm registry login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - helm package ${CHART_NAME} --destination ${CHART_PACKAGE_DIR}
+    - helm cm-push ${CHART_PACKAGE_DIR}/${CHART_NAME}-${CHART_VERSION}.tgz oci://${GITLAB_REGISTRY_URL}
+  only:
+    - tags
