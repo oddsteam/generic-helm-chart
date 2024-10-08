@@ -1,11 +1,15 @@
 stages:
   - lint-helm-chart
 
+variables:
+  CHART_NAME: "application"
+  HELM_VERSION: "3.16"
+  HELM_EXPERIMENTAL_OCI: 1
+
 image:
   name: alpine/helm:3.2.1
   entrypoint: ["/bin/sh", "-c"]
-variables:
-  HELM_EXPERIMENTAL_OCI: 1
+
 lint-helm:
   stage: lint-helm-chart
   script:
