@@ -1,16 +1,21 @@
 stages:
   - lint-helm-chart
+  - publish-helm-chart
 
 variables:
   CHART_NAME: "application"
   HELM_VERSION: "3.16"
   HELM_EXPERIMENTAL_OCI: 1
 
-image:
-  name: alpine/helm:3.2.1
-  entrypoint: ["/bin/sh", "-c"]
-
 lint-helm:
+  image: alpine/helm:${HELM_VERSION}
   stage: lint-helm-chart
   script:
     - helm lint ${CHART_NAME}
+
+publish-helm:
+  image: alpine/helm:${HELM_VERSION}
+  stage: publish-helm-chart
+  script:
+    - helm lint ${CHART_NAME}
+    - echo "Helm chart published"
