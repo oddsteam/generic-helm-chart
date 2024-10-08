@@ -38,6 +38,6 @@ publish-helm:
     - helm --help
     - echo "$CI_REGISTRY_PASSWORD" | helm registry login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - helm package ${CHART_NAME} --destination ${CHART_PACKAGE_DIR}
-    - helm push ${CHART_PACKAGE_DIR}/${CHART_NAME}-${CHART_VERSION}.tgz oci://${GITLAB_REGISTRY_URL}
+    - helm push ${CHART_PACKAGE_DIR}/${CHART_NAME}-4.2.6.tgz oci://${GITLAB_REGISTRY_URL}
   only:
     - tags
